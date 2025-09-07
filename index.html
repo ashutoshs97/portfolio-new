@@ -7,7 +7,6 @@
     <link id="favicon" rel="icon" href="">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
@@ -59,13 +58,12 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
         .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.2s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
             border: 1px solid #e5e7eb;
             background-color: #ffffff;
         }
         .card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 0 15px rgba(79, 70, 229, 0.3), 0 10px 20px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 25px rgba(79, 70, 229, 0.2), 0 10px 20px rgba(79, 70, 229, 0.1);
             border-color: rgba(99, 102, 241, 0.4);
         }
         .timeline-item::before {
@@ -80,33 +78,40 @@
             background-color: #4f46e5;
             border: 4px solid #d1d5db;
         }
-        /* Custom Cursor Styles */
+        /* Big Aesthetic Cursor Styles */
+        .cursor, .cursor-follower {
+            position: fixed;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
+
         .cursor {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #4f46e5;
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            transition: transform 0.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
+
         .cursor-follower {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            border: 2px solid #4f46e5;
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-                        height 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-                        border-radius 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-                        background-color 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-                        border-width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            width: 50px;
+            height: 50px;
+            border: 1px solid white;
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+                        width 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+                        height 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
+
+        .cursor.hover-effect {
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+
+        .cursor-follower.hover-effect {
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+
         /* Text Animation */
         .animated-text span {
             display: inline-block;
@@ -114,10 +119,14 @@
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        /* Improved Button Shine Effect */
+        /* Improved Button Shine and Press Effect */
         .btn {
             position: relative;
             overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+        .btn:active {
+            transform: scale(0.97);
         }
         .btn::before {
             content: '';
@@ -156,6 +165,9 @@
             color: #4f46e5;
         }
         /* Bento Grid */
+        .bento-grid, #project-grid, #profile-grid {
+            perspective: 1000px;
+        }
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -213,15 +225,26 @@
         }
         /* Expandable Designs Animation */
         #more-designs {
-            transition: max-height 0.7s ease-in-out, opacity 0.5s ease-in-out, margin-top 0.7s ease-in-out;
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
+           display: grid;
+           grid-template-columns: repeat(4, 1fr);
+           gap: 1rem;
         }
-        #more-designs.expanded {
-            max-height: 1000px; /* Adjust if content is taller */
+         @media (max-width: 768px) {
+            #more-designs {
+                grid-template-columns: 1fr;
+            }
+        }
+        #more-designs .bento-item {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        #more-designs.expanded .bento-item {
+            max-height: 500px; /* Large enough value */
             opacity: 1;
-            margin-top: 1rem; /* Equivalent to mt-4 */
+            transform: translateY(0);
         }
         /* Lightbox Styles with Animation */
         #lightbox {
@@ -254,14 +277,14 @@
         }
         /* Project Filtering */
         .project-card {
-            transition: transform 0.4s ease, opacity 0.4s ease, width 0.3s ease, 
-                        margin 0.3s ease, padding 0.3s ease;
+            transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
         .project-card.hidden {
             transform: scale(0.9);
             opacity: 0;
             width: 0 !important;
+            height: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
             overflow: hidden;
@@ -286,6 +309,51 @@
         /* New Testimonial Styles */
         .testimonial-item {
             transition: opacity 0.5s ease-in-out;
+        }
+        /* Enhanced Profile Card Styles */
+        .profile-card {
+            background: #fff;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-card .card-content {
+            transition: transform 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-card .icon-container {
+            transition: transform 0.3s;
+        }
+        .profile-card:hover .icon-container {
+            transform: scale(1.1);
+        }
+        .profile-card a .arrow {
+             transition: transform 0.3s;
+        }
+        .profile-card:hover a .arrow {
+            transform: translateX(4px);
+        }
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-start);
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            z-index: 1;
+        }
+        .profile-card:hover::before {
+            opacity: 1;
         }
     </style>
 </head>
@@ -313,6 +381,7 @@
                 <nav class="hidden md:flex md:grow">
                     <ul class="flex grow justify-end flex-wrap items-center">
                         <li><a href="#about" class="font-medium text-gray-600 hover:text-indigo-600 px-5 py-3 flex items-center transition duration-150 ease-in-out">About</a></li>
+                        <li><a href="#profiles" class="font-medium text-gray-600 hover:text-indigo-600 px-5 py-3 flex items-center transition duration-150 ease-in-out">Profiles</a></li>
                         <li><a href="#skills" class="font-medium text-gray-600 hover:text-indigo-600 px-5 py-3 flex items-center transition duration-150 ease-in-out">Skills</a></li>
                         <li><a href="#projects" class="font-medium text-gray-600 hover:text-indigo-600 px-5 py-3 flex items-center transition duration-150 ease-in-out">Projects</a></li>
                         <li><a href="#testimonials" class="font-medium text-gray-600 hover:text-indigo-600 px-5 py-3 flex items-center transition duration-150 ease-in-out">Testimonials</a></li>
@@ -326,9 +395,9 @@
     <main class="flex-grow">
 
         <!-- Hero Section -->
-        <section id="hero" class="relative flex items-center justify-center h-screen px-4">
+        <section id="hero" class="relative flex items-center justify-center h-screen px-4 overflow-hidden">
             <canvas id="hero-canvas"></canvas>
-            <div class="text-center z-10">
+            <div class="text-center relative z-10">
                 <h1 class="animated-text text-4xl md:text-7xl font-extrabold leading-tighter tracking-tighter mb-4 text-gray-900"></h1>
                 <p class="text-lg md:text-2xl text-gray-600 mb-8 opacity-0 transition-opacity duration-1000 delay-500" id="hero-subtitle"></p>
                 <div class="max-w-xs mx-auto sm:max-w-none flex flex-col sm:flex-row sm:justify-center items-center opacity-0 transition-opacity duration-1000 delay-1000" id="hero-buttons">
@@ -346,6 +415,89 @@
                     <p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
                         I am a driven UX Designer focused on crafting intuitive and impactful digital products that address real user problems and business objectives. I'm eager to leverage my strong foundation in UI/UX, web development, and emerging AI/automation technologies to deliver practical, innovative design solutions.
                     </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Profiles Section -->
+        <section id="profiles" class="py-20 md:py-32">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="text-center mb-12">
+                     <h2 class="animated-text text-3xl md:text-4xl font-bold text-gray-900">Find Me Online</h2>
+                </div>
+                <div id="profile-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Behance Card -->
+                    <a href="https://behance.net/ashutoshs97" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #1769ff, #053eff)">
+                        <div class="card-content">
+                            <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.933 10.455H4.156V7.333h3.777v3.122zM12.333 10.5h4.156c.922 0 1.467-.6 1.467-1.533 0-1-.533-1.534-1.467-1.534H12.33v3.067zM16.49 12.333H12.33v3.223h4.222c1.022 0 1.6-.6 1.6-1.622.001-1.022-.578-1.601-1.662-1.601zM19.578 3H4.422C3.644 3 3 3.644 3 4.422v15.156C3 20.356 3.644 21 4.422 21h15.156c.778 0 1.422-.644 1.422-1.422V4.422C21 3.644 20.356 3 19.578 3zM8.533 16.6H4.156v-4.933h4.377v4.933zM9.5 7.644c0-.911.756-1.667 1.667-1.667h5.4c1.889 0 3.289 1.4 3.289 3.267 0 1.933-1.311 3.355-3.356 3.355h-3.044v.91h3.022c2.134 0 3.534 1.467 3.534 3.423 0 2.022-1.444 3.466-3.6 3.466h-5.31c-.91 0-1.667-.755-1.667-1.667V7.644z"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Behance</h3>
+                            <span class="font-medium text-indigo-600 inline-flex items-center">View Profile <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
+                    <!-- LinkedIn Card -->
+                    <a href="https://linkedin.com/in/ashutoshs97" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #0077B5, #0e76a8)">
+                        <div class="card-content">
+                             <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19.75 3H4.25A1.25 1.25 0 003 4.25v15.5A1.25 1.25 0 004.25 21h15.5A1.25 1.25 0 0021 19.75V4.25A1.25 1.25 0 0019.75 3zM8.5 18h-3V9h3v9zM7 7.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM18 18h-3v-4.25c0-1.07-.02-2.44-1.5-2.44-1.5 0-1.73 1.17-1.73 2.36V18h-3V9h2.88v1.32h.04c.4-.76 1.38-1.56 2.84-1.56 3.03 0 3.59 2 3.59 4.58V18z"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">LinkedIn</h3>
+                             <span class="font-medium text-indigo-600 inline-flex items-center">View Profile <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
+                    <!-- Dribbble Card -->
+                    <a href="https://dribbble.com/ashutoshs97" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #ea4c89, #d92d77)">
+                         <div class="card-content">
+                            <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12zM8.736 4.62c2.115-.46 4.354.12 6.05 1.524-1.353-.87-3.023-1.22-4.66-1.033a10.45 10.45 0 00-1.39 1.033zm7.067 1.944c1.464 1.83 2.14 4.19 1.928 6.516.03.003-3.61-.16-7.838-1.378 2.342-2.52 4.475-4.27 5.91-5.138zM4.15 11.23c.225-2.924 1.58-5.59 3.65-7.465C5.55 5.926 4.16 8.525 4.15 11.23zm-.01 1.524c.004.38.03.76.08 1.135 2.87 3.32 7.64 5.33 12.63 5.42-1.71-1.8-2.8-4.08-3.12-6.555-4.228 1.21-7.81 1.37-7.59 0zm14.12 6.38c-2.34.4-4.81.42-7.23.01-1.952.8-4.14 1.18-6.31 1.07.49.63.98 1.26 1.51 1.85 2.5 2.8 6.03 4.4 9.8 4.4.26 0 .52-.01.78-.04-.03-.02-.07-.04-.1-.07-.46-.53-.88-1.1-1.26-1.68-.1-.14-.19-.28-.29-.42z"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Dribbble</h3>
+                            <span class="font-medium text-indigo-600 inline-flex items-center">View Profile <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
+                    <!-- GitHub Card -->
+                    <a href="https://github.com/ashutoshs97" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #333, #111)">
+                        <div class="card-content">
+                            <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.491.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.82c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">GitHub</h3>
+                            <span class="font-medium text-indigo-600 inline-flex items-center">View Profile <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
+                </div>
+                 <div id="profile-grid-2" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                    <!-- Figma Card -->
+                    <a href="https://www.figma.com/@ashutoshs97" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #a259ff, #f24e1e)">
+                        <div class="card-content">
+                           <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c-1.657 0-3 1.343-3 3v6h3v-6c0-1.657-1.343-3-3-3z" fill="#1ABCfe"/><path d="M9 15c0 1.657 1.343 3 3 3h3v-3c0-1.657-1.343-3-3-3H9v3z" fill="#0ACF83"/><path d="M9 9c0 1.657 1.343 3 3 3h3V9c0-1.657-1.343-3-3-3H9v3z" fill="#A259FF"/><path d="M15 6c1.657 0 3 1.343 3 3v3h-3V9c0-1.657 1.343-3 3-3z" fill="#F24E1E"/><path d="M15 15c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z" fill="#FF7262"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Figma</h3>
+                            <span class="font-medium text-indigo-600 inline-flex items-center">View Profile <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
+                    <!-- GenAI Art Card -->
+                    <a href="https://ashutoshuix.wixsite.com/genaiart" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #9333ea, #fde047)">
+                        <div class="card-content">
+                            <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l.707-.707M6.343 17.657l-.707.707m12.728 0l.707.707M12 21v-1m0-16a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">GenAI Art</h3>
+                            <span class="font-medium text-indigo-600 inline-flex items-center">View Portfolio <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
+                    <!-- Certificates Card -->
+                    <a href="https://www.linkedin.com/in/ashutoshs97/details/certifications/" target="_blank" class="profile-card" style="--gradient-start: linear-gradient(45deg, #f59e0b, #facc15)">
+                        <div class="card-content">
+                            <div class="icon-container w-16 h-16 mx-auto mb-4 flex items-center justify-center text-gray-800">
+                                <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Certificates</h3>
+                            <span class="font-medium text-indigo-600 inline-flex items-center">View Credentials <span class="arrow ml-1">&rarr;</span></span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </section>
@@ -486,7 +638,7 @@
                     <div class="bento-item bento-item-4 card"><img src="images/design-showcase-4.png" alt="Design 4" class="expandable-image"></div>
                 </div>
 
-                <div id="more-designs" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div id="more-designs">
                     <div class="bento-item card"><img src="images/design-showcase-5.png" alt="Design 5" class="expandable-image"></div>
                     <div class="bento-item card"><img src="images/design-showcase-6.png" alt="Design 6" class="expandable-image"></div>
                     <div class="bento-item card"><img src="images/design-showcase-7.png" alt="Design 7" class="expandable-image"></div>
@@ -562,7 +714,7 @@
                                         <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=R" alt="Rishav" class="w-12 h-12 rounded-full object-cover">
                                         <div class="ml-4">
                                             <p class="font-bold text-gray-900">Rishav</p>
-                                            <p class="text-gray-500">CEO of Picxele</p>
+                                            <p class="text-gray-500">Picxele</p>
                                         </div>
                                     </div>
                                 </div>
@@ -625,12 +777,11 @@
             <p class="text-gray-500">&copy; 2025 Ashutosh Sharma. All rights reserved.</p>
             <div class="flex justify-center space-x-6 mt-4">
                 <a href="mailto:ashutoshuix@gmail.com" class="text-gray-500 hover:text-indigo-600">Email</a>
-                <a href="https://www.linkedin.com/in/ashutoshs97/" class="text-gray-500 hover:text-indigo-600">LinkedIn</a>
-                <a href="https://www.figma.com/@ashutoshs97" class="text-gray-500 hover:text-indigo-600">Figma</a>
-                <a href="https://www.behance.net/ashutoshs97" class="text-gray-500 hover:text-indigo-600">Behance</a>
-                <a href="https://github.com/ashutoshs97/" class="text-gray-500 hover:text-indigo-600">Github</a>
-                <a href="https://bento.me/ashutoshs97" class="text-gray-500 hover:text-indigo-600">Bento</a>
-                <a href="https://dribbble.com/ashutoshs97" class="text-gray-500 hover:text-indigo-600">Dribbble</a>
+                <a href="https://linkedin.com/in/ashutoshs97" target="_blank" class="text-gray-500 hover:text-indigo-600">LinkedIn</a>
+                <a href="https://www.figma.com/@ashutoshs97" target="_blank" class="text-gray-500 hover:text-indigo-600">Figma</a>
+                <a href="https://behance.net/ashutoshs97" target="_blank" class="text-gray-500 hover:text-indigo-600">Behance</a>
+                <a href="https://github.com/ashutoshs97" target="_blank" class="text-gray-500 hover:text-indigo-600">GitHub</a>
+                <a href="https://dribbble.com/ashutoshs97" target="_blank" class="text-gray-500 hover:text-indigo-600">Dribbble</a>
             </div>
         </div>
     </footer>
@@ -649,31 +800,31 @@
 
             // --- Animated Favicon ---
             const favicon = document.getElementById('favicon');
-            const canvas = document.createElement('canvas');
-            canvas.width = 32;
-            canvas.height = 32;
-            const ctx = canvas.getContext('2d');
+            const faviconCanvas = document.createElement('canvas');
+            faviconCanvas.width = 32;
+            faviconCanvas.height = 32;
+            const faviconCtx = faviconCanvas.getContext('2d');
             let angle = 0;
 
             function drawFavicon() {
-                ctx.clearRect(0, 0, 32, 32);
+                faviconCtx.clearRect(0, 0, 32, 32);
                 
                 // Outer circle
-                ctx.beginPath();
-                ctx.arc(16, 16, 14, 0, 2 * Math.PI);
-                ctx.strokeStyle = '#4f46e5';
-                ctx.lineWidth = 3;
-                ctx.stroke();
+                faviconCtx.beginPath();
+                faviconCtx.arc(16, 16, 14, 0, 2 * Math.PI);
+                faviconCtx.strokeStyle = '#4f46e5';
+                faviconCtx.lineWidth = 3;
+                faviconCtx.stroke();
 
                 // Inner dot
                 const x = 16 + 10 * Math.cos(angle);
                 const y = 16 + 10 * Math.sin(angle);
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, 2 * Math.PI);
-                ctx.fillStyle = '#4f46e5';
-                ctx.fill();
+                faviconCtx.beginPath();
+                faviconCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                faviconCtx.fillStyle = '#4f46e5';
+                faviconCtx.fill();
                 
-                favicon.href = canvas.toDataURL('image/png');
+                favicon.href = faviconCanvas.toDataURL('image/png');
                 angle += 0.05;
                 requestAnimationFrame(drawFavicon);
             }
@@ -683,10 +834,15 @@
             let soundInitialized = false;
             let clickSound;
 
-            function initSound() {
+            async function initSound() {
                 if(soundInitialized) return;
-                clickSound = new Tone.MembraneSynth().toDestination();
-                soundInitialized = true;
+                try {
+                    await Tone.start();
+                    clickSound = new Tone.MembraneSynth().toDestination();
+                    soundInitialized = true;
+                } catch (e) {
+                    console.error("Could not start audio context: ", e);
+                }
             }
 
             document.body.addEventListener('click', initSound, { once: true });
@@ -790,42 +946,98 @@
                 }
             });
             
-            // --- 3D Hero Background ---
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('hero-canvas'), alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            const geometry = new THREE.IcosahedronGeometry(2, 0);
-            const material = new THREE.MeshBasicMaterial({ color: 0x4f46e5, wireframe: true });
-            const shape = new THREE.Mesh(geometry, material);
-            scene.add(shape);
-
-            camera.position.z = 5;
-
-            let mouseX3D = 0;
-            let mouseY3D = 0;
-            document.addEventListener('mousemove', (event) => {
-                mouseX3D = (event.clientX / window.innerWidth) * 2 - 1;
-                mouseY3D = -(event.clientY / window.innerHeight) * 2 + 1;
-            });
-
-            function animate3D() {
-                requestAnimationFrame(animate3D);
-                shape.rotation.x += 0.001;
-                shape.rotation.y += 0.001;
-                camera.position.x += (mouseX3D - camera.position.x) * 0.05;
-                camera.position.y += (mouseY3D - camera.position.y) * 0.05;
-                camera.lookAt(scene.position);
-                renderer.render(scene, camera);
-            }
-            animate3D();
+            // --- Particle Hero Background ---
+            const heroCanvas = document.getElementById('hero-canvas');
+            const heroCtx = heroCanvas.getContext('2d');
+            let w, h;
+            let mouse = { x: undefined, y: undefined };
+            let particles = [];
             
-            window.addEventListener('resize', () => {
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
+            class Particle {
+                constructor(x, y, size, speedX, speedY, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = size;
+                    this.speedX = speedX;
+                    this.speedY = speedY;
+                    this.color = color;
+                }
+                update() {
+                    if (this.x > w || this.x < 0) this.speedX *= -1;
+                    if (this.y > h || this.y < 0) this.speedY *= -1;
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                }
+                draw() {
+                    heroCtx.fillStyle = this.color;
+                    heroCtx.beginPath();
+                    heroCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    heroCtx.fill();
+                }
+            }
+
+            const initParticles = () => {
+                particles = [];
+                let numberOfParticles = (w * h) / 9000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = Math.random() * 2 + 1;
+                    let x = Math.random() * (w - size * 2) + size;
+                    let y = Math.random() * (h - size * 2) + size;
+                    let speedX = (Math.random() * 0.4) - 0.2;
+                    let speedY = (Math.random() * 0.4) - 0.2;
+                    let color = 'rgba(79, 70, 229, 0.7)';
+                    particles.push(new Particle(x, y, size, speedX, speedY, color));
+                }
+            };
+            
+            const setCanvasDimensions = () => {
+                w = heroCanvas.width = window.innerWidth;
+                h = heroCanvas.height = window.innerHeight;
+                initParticles();
+            };
+            setCanvasDimensions();
+
+            window.addEventListener('resize', setCanvasDimensions);
+
+            heroCanvas.addEventListener('mousemove', e => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
             });
+             heroCanvas.addEventListener('mouseleave', () => {
+                mouse.x = undefined;
+                mouse.y = undefined;
+            });
+
+            const connectParticles = () => {
+                let opacityValue = 1;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a; b < particles.length; b++) {
+                        let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) +
+                                     ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                        if (distance < (w / 7) * (h / 7)) {
+                            opacityValue = 1 - (distance / 20000);
+                            heroCtx.strokeStyle = `rgba(79, 70, 229, ${opacityValue})`;
+                            heroCtx.lineWidth = 1;
+                            heroCtx.beginPath();
+                            heroCtx.moveTo(particles[a].x, particles[a].y);
+                            heroCtx.lineTo(particles[b].x, particles[b].y);
+                            heroCtx.stroke();
+                        }
+                    }
+                }
+            };
+            
+            const animateParticles = () => {
+                heroCtx.clearRect(0, 0, w, h);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                connectParticles();
+                requestAnimationFrame(animateParticles);
+            };
+            animateParticles();
+
 
             // --- Page Transitions & Active Nav on Scroll ---
             const sections = document.querySelectorAll('section');
@@ -893,72 +1105,62 @@
             setTimeout(() => document.getElementById('hero-buttons').style.opacity = 1, 1000);
 
 
-            // --- Magnetic Cursor Script ---
+            // --- Smoother Cursor & 3D Tilt ---
             const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
             
             if (!isTouchDevice) {
                 const cursor = document.querySelector('.cursor');
                 const follower = document.querySelector('.cursor-follower');
-                const magneticElements = document.querySelectorAll('a, button, .card');
+                const interactiveElements = document.querySelectorAll('a, button, .expandable-image, .filter-btn');
 
-                let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+                let mouseXFollow = 0, mouseYFollow = 0, followerX = 0, followerY = 0;
                 const speed = 0.1;
 
                 window.addEventListener('mousemove', e => {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
+                    mouseXFollow = e.clientX;
+                    mouseYFollow = e.clientY;
                 });
 
                 function animateCursor() {
-                    cursor.style.left = mouseX + 'px';
-                    cursor.style.top = mouseY + 'px';
+                    cursor.style.left = mouseXFollow + 'px';
+                    cursor.style.top = mouseYFollow + 'px';
                     
-                    let closestEl = null;
-                    let min_dist = Infinity;
+                    followerX += (mouseXFollow - followerX) * speed;
+                    followerY += (mouseYFollow - followerY) * speed;
                     
-                    magneticElements.forEach(el => {
-                        const rect = el.getBoundingClientRect();
-                        const center_x = rect.left + rect.width / 2;
-                        const center_y = rect.top + rect.height / 2;
-                        const dist = Math.hypot(mouseX - center_x, mouseY - center_y);
-                        if (dist < min_dist && dist < 80) {
-                            min_dist = dist;
-                            closestEl = el;
-                        }
-                    });
-
-                    if (closestEl) {
-                        const rect = closestEl.getBoundingClientRect();
-                        const center_x = rect.left + rect.width / 2;
-                        const center_y = rect.top + rect.height / 2;
-                        followerX += (center_x - followerX) * 0.2;
-                        followerY += (center_y - followerY) * 0.2;
-                        
-                        follower.style.width = `${rect.width + 10}px`;
-                        follower.style.height = `${rect.height + 10}px`;
-                        follower.style.borderRadius = '12px';
-                        follower.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
-                        follower.style.borderWidth = '1px';
-                        cursor.style.opacity = '0';
-                    } else {
-                        followerX += (mouseX - followerX) * speed;
-                        followerY += (mouseY - followerY) * speed;
-                        
-                        follower.style.width = '40px';
-                        follower.style.height = '40px';
-                        follower.style.borderRadius = '50%';
-                        follower.style.backgroundColor = 'transparent';
-                        follower.style.borderWidth = '2px';
-                        cursor.style.opacity = '1';
-                    }
-                    
-                    follower.style.transform = 'translate(-50%, -50%)';
+                    follower.style.transform = `translate(-50%, -50%)`;
                     follower.style.left = followerX + 'px';
                     follower.style.top = followerY + 'px';
 
                     requestAnimationFrame(animateCursor);
                 };
                 animateCursor();
+
+                 interactiveElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursor.classList.add('hover-effect');
+                        follower.classList.add('hover-effect');
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        cursor.classList.remove('hover-effect');
+                        follower.classList.remove('hover-effect');
+                    });
+                });
+
+                document.querySelectorAll('.project-card, .profile-card, .bento-item').forEach(card => {
+                    card.addEventListener('mousemove', e => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const { width, height } = rect;
+                        const rotateX = (y / height - 0.5) * -20; // Increased rotation
+                        const rotateY = (x / width - 0.5) * 20; // Increased rotation
+                        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+                    });
+                });
             }
 
             // --- Contact Form Submission ---
@@ -1052,11 +1254,19 @@
             const expandBtn = document.getElementById('expand-designs-btn');
             const moreDesignsGrid = document.getElementById('more-designs');
             expandBtn.addEventListener('click', () => {
-                moreDesignsGrid.classList.toggle('expanded');
-                if (moreDesignsGrid.classList.contains('expanded')) {
-                    expandBtn.textContent = 'Show Less';
+                const isExpanded = moreDesignsGrid.classList.toggle('expanded');
+                expandBtn.textContent = isExpanded ? 'Show Less' : 'Expand More';
+                
+                if (isExpanded) {
+                    const items = moreDesignsGrid.querySelectorAll('.bento-item');
+                    items.forEach((item, index) => {
+                        item.style.transitionDelay = `${index * 50}ms`;
+                    });
                 } else {
-                    expandBtn.textContent = 'Expand More';
+                     const items = moreDesignsGrid.querySelectorAll('.bento-item');
+                    items.forEach(item => {
+                        item.style.transitionDelay = '0ms';
+                    });
                 }
             });
         });
