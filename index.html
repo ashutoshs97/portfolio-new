@@ -6,7 +6,7 @@
     <title>Ashutosh Sharma - UI/UX Designer</title>
     <link id="favicon" rel="icon" href="">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
@@ -42,14 +42,6 @@
         section.visible {
             opacity: 1;
             transform: translateY(0);
-        }
-        #hero-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
         }
         .glass-effect {
             background: rgba(243, 244, 246, 0.8); /* Glass effect matching the new background */
@@ -311,10 +303,6 @@
             color: white;
             border-color: #4f46e5;
         }
-        /* New Testimonial Styles */
-        .testimonial-item {
-            transition: opacity 0.5s ease-in-out;
-        }
         
         /* --- ENHANCED MINIMAL PROFILE CARD STYLES --- */
         .profile-card {
@@ -363,23 +351,79 @@
             transform: translateX(4px);
         }
 
-        /* --- Hero Text Animation --- */
+        /* --- Modern Hero Text Animation --- */
         #animated-verb-container {
-            height: 1.2em; /* Match line-height */
-            overflow: hidden;
-            vertical-align: bottom;
+            height: 1.2em;
+            position: relative;
+            display: inline-block;
+            vertical-align: baseline;
         }
-        #animated-verb {
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        .slide-out {
-            transform: translateY(-120%);
+
+        #animated-verb span {
+            display: inline-block;
             opacity: 0;
+            transform: translateY(100%);
+            animation-duration: 0.6s;
+            animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .slide-in {
-            transform: translateY(120%);
+
+        @keyframes slideUpIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDownOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+        
+        #animated-verb.animate-in span {
+            animation-name: slideUpIn;
+        }
+
+        #animated-verb.animate-out span {
+            animation-name: slideDownOut;
+        }
+
+        /* --- Modern Testimonial Styles --- */
+        .testimonial-item {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            position: absolute;
+            inset: 0;
+        }
+        .testimonial-item.active {
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 10;
+        }
+        .testimonial-item.exiting {
             opacity: 0;
+            transform: translateY(-20px);
         }
+        .testimonial-item:not(.active):not(.exiting) {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .testimonial-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #d1d5db;
+            transition: background-color 0.3s ease;
+        }
+        .testimonial-dot.active {
+            background-color: #4f46e5;
+        }
+
     </style>
 </head>
 <body class="antialiased">
@@ -420,21 +464,23 @@
     <main class="flex-grow">
 
         <!-- Hero Section -->
-        <section id="hero" class="relative flex items-center justify-center h-screen px-4 overflow-hidden">
-            <canvas id="hero-canvas"></canvas>
-            <div class="text-center relative z-10">
-                <h1 class="text-4xl md:text-7xl font-extrabold leading-tighter tracking-tighter mb-4 text-gray-900">
-                    <span class="inline-block">I</span>
-                    <span id="animated-verb-container" class="inline-block relative text-indigo-600 w-64 md:w-[26rem] text-left">
-                        <span id="animated-verb" class="absolute left-0">Create</span>
-                    </span>
-                    <br class="md:hidden">
-                    <span class="inline-block">Digital Experiences.</span>
-                </h1>
-                <p class="text-lg md:text-2xl text-gray-600 mb-8" id="hero-subtitle">A UI/UX Designer crafting intuitive and impactful digital products that address real user problems and business objectives.</p>
-                <div class="max-w-xs mx-auto sm:max-w-none flex flex-col sm:flex-row sm:justify-center items-center" id="hero-buttons">
-                    <a href="#projects" class="btn text-white bg-indigo-600 hover:bg-indigo-700 w-full mb-4 sm:w-auto sm:mb-0 px-8 py-3 rounded-md">View My Work</a>
-                    <a href="https://drive.google.com/file/d/1A2co6Mh9qHROt4H1Scuy4TzR0JLLHxk7/view" target="_blank" class="btn text-indigo-600 bg-transparent border border-indigo-600 hover:bg-indigo-50 w-full sm:w-auto sm:ml-4 px-8 py-3 rounded-md">View Resume</a>
+        <section id="hero" class="relative flex items-center h-screen">
+            <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="text-left">
+                    <h1 class="text-4xl md:text-7xl font-black leading-none tracking-tighter mb-4 text-gray-900">
+                        <div class="flex items-baseline">
+                            <span class="inline-block">I</span>
+                            <span id="animated-verb-container" class="relative text-indigo-600 w-64 md:w-[26rem] text-left ml-4">
+                                <span id="animated-verb" class="absolute inset-0"></span>
+                            </span>
+                        </div>
+                        <span class="block">Digital Experiences.</span>
+                    </h1>
+                    <p class="text-lg md:text-2xl text-gray-600 mb-8 max-w-2xl" id="hero-subtitle">A UI/UX Designer crafting intuitive and impactful digital products that address real user problems and business objectives.</p>
+                    <div id="hero-buttons" class="flex flex-col sm:flex-row">
+                        <a href="#projects" class="btn text-white bg-gray-900 hover:bg-gray-800 w-full mb-4 sm:w-auto sm:mb-0 px-8 py-3 rounded-md">View My Work</a>
+                        <a href="https://drive.google.com/file/d/1A2co6Mh9qHROt4H1Scuy4TzR0JLLHxk7/view" target="_blank" class="btn text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-100 w-full sm:w-auto sm:ml-4 px-8 py-3 rounded-md">View Resume</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -720,67 +766,48 @@
                 <div class="text-center mb-12">
                      <h2 class="animated-text text-3xl md:text-4xl font-bold text-gray-900">What People Are Saying</h2>
                 </div>
-                <div class="relative">
-                    <div id="testimonial-carousel" class="overflow-hidden">
-                        <div class="flex transition-transform duration-500 ease-in-out">
-                            <!-- Testimonial 1 -->
-                            <div class="testimonial-item w-full flex-shrink-0 px-2">
-                                <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 relative">
-                                    <svg class="absolute top-8 left-8 w-12 h-12 text-indigo-100" fill="currentColor" viewBox="0 0 48 48">
-                                        <path d="M14.5 32c-3.58 0-6.5-2.92-6.5-6.5s2.92-6.5 6.5-6.5c3.04 0 5.58 2.1 6.32 5h4.16c-.74-5.22-5.1-9-10.48-9-5.78 0-10.5 4.72-10.5 10.5S8.72 34 14.5 34c4.14 0 7.7-2.48 9.4-6h-4.2c-.78 2.32-3.12 4-5.7 4zm20 0c-3.58 0-6.5-2.92-6.5-6.5s2.92-6.5 6.5-6.5c3.04 0 5.58 2.1 6.32 5h4.16c-.74-5.22-5.1-9-10.48-9-5.78 0-10.5 4.72-10.5 10.5S28.72 34 34.5 34c4.14 0 7.7-2.48 9.4-6h-4.2c-.78 2.32-3.12 4-5.7 4z"/>
-                                    </svg>
-                                    <p class="text-lg md:text-xl text-gray-600 relative z-10">"Ashutosh's ability to translate complex requirements into intuitive and beautiful user interfaces is exceptional. He was a key player in our project's success."</p>
-                                    <div class="flex items-center mt-6">
-                                        <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=AK" alt="Ashish Kumar" class="w-12 h-12 rounded-full object-cover">
-                                        <div class="ml-4">
-                                            <p class="font-bold text-gray-900">Ashish Kumar</p>
-                                            <p class="text-gray-500">CEO of Saltoris</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Testimonial 2 -->
-                            <div class="testimonial-item w-full flex-shrink-0 px-2">
-                               <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 relative">
-                                    <svg class="absolute top-8 left-8 w-12 h-12 text-indigo-100" fill="currentColor" viewBox="0 0 48 48">
-                                        <path d="M14.5 32c-3.58 0-6.5-2.92-6.5-6.5s2.92-6.5 6.5-6.5c3.04 0 5.58 2.1 6.32 5h4.16c-.74-5.22-5.1-9-10.48-9-5.78 0-10.5 4.72-10.5 10.5S8.72 34 14.5 34c4.14 0 7.7-2.48 9.4-6h-4.2c-.78 2.32-3.12 4-5.7 4zm20 0c-3.58 0-6.5-2.92-6.5-6.5s2.92-6.5 6.5-6.5c3.04 0 5.58 2.1 6.32 5h4.16c-.74-5.22-5.1-9-10.48-9-5.78 0-10.5 4.72-10.5 10.5S28.72 34 34.5 34c4.14 0 7.7-2.48 9.4-6h-4.2c-.78 2.32-3.12 4-5.7 4z"/>
-                                    </svg>
-                                    <p class="text-lg md:text-xl text-gray-600 relative z-10">"Working with Ashutosh was a pleasure. He is a great communicator and a true team player who consistently delivers high-quality work on time."</p>
-                                    <div class="flex items-center mt-6">
-                                        <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=DK" alt="Deepanshu Kumar" class="w-12 h-12 rounded-full object-cover">
-                                        <div class="ml-4">
-                                            <p class="font-bold text-gray-900">Deepanshu Kumar</p>
-                                            <p class="text-gray-500">CEO of Pennyupp & Bondspe</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                             <!-- Testimonial 3 -->
-                            <div class="testimonial-item w-full flex-shrink-0 px-2">
-                                <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 relative">
-                                    <svg class="absolute top-8 left-8 w-12 h-12 text-indigo-100" fill="currentColor" viewBox="0 0 48 48">
-                                        <path d="M14.5 32c-3.58 0-6.5-2.92-6.5-6.5s2.92-6.5 6.5-6.5c3.04 0 5.58 2.1 6.32 5h4.16c-.74-5.22-5.1-9-10.48-9-5.78 0-10.5 4.72-10.5 10.5S8.72 34 14.5 34c4.14 0 7.7-2.48 9.4-6h-4.2c-.78 2.32-3.12 4-5.7 4zm20 0c-3.58 0-6.5-2.92-6.5-6.5s2.92-6.5 6.5-6.5c3.04 0 5.58 2.1 6.32 5h4.16c-.74-5.22-5.1-9-10.48-9-5.78 0-10.5 4.72-10.5 10.5S28.72 34 34.5 34c4.14 0 7.7-2.48 9.4-6h-4.2c-.78 2.32-3.12 4-5.7 4z"/>
-                                    </svg>
-                                    <p class="text-lg md:text-xl text-gray-600 relative z-10">"Ashutosh has a fantastic eye for design and a deep understanding of user experience. He was instrumental in shaping the visual identity of our platform."</p>
-                                    <div class="flex items-center mt-6">
-                                        <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=R" alt="Rishav" class="w-12 h-12 rounded-full object-cover">
-                                        <div class="ml-4">
-                                            <p class="font-bold text-gray-900">Rishav</p>
-                                            <p class="text-gray-500">Picxele</p>
-                                        </div>
-                                    </div>
+                <div id="testimonial-container" class="relative h-80 md:h-72">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-item">
+                        <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 h-full flex flex-col justify-center">
+                            <p class="text-lg md:text-xl text-gray-600 relative z-10 text-center">"Ashutosh's ability to translate complex requirements into intuitive and beautiful user interfaces is exceptional. He was a key player in our project's success."</p>
+                            <div class="flex items-center mt-6 justify-center">
+                                <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=AK" alt="Ashish Kumar" class="w-12 h-12 rounded-full object-cover">
+                                <div class="ml-4 text-left">
+                                    <p class="font-bold text-gray-900">Ashish Kumar</p>
+                                    <p class="text-gray-500">CEO of Saltoris</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-center mt-8 space-x-3">
-                         <button id="prev-testimonial" class="bg-white p-3 rounded-full shadow-md text-gray-600 hover:bg-gray-100 transition duration-300">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <button id="next-testimonial" class="bg-white p-3 rounded-full shadow-md text-gray-600 hover:bg-gray-100 transition duration-300">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        </button>
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-item">
+                       <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 h-full flex flex-col justify-center">
+                            <p class="text-lg md:text-xl text-gray-600 relative z-10 text-center">"Working with Ashutosh was a pleasure. He is a great communicator and a true team player who consistently delivers high-quality work on time."</p>
+                            <div class="flex items-center mt-6 justify-center">
+                                <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=DK" alt="Deepanshu Kumar" class="w-12 h-12 rounded-full object-cover">
+                                <div class="ml-4 text-left">
+                                    <p class="font-bold text-gray-900">Deepanshu Kumar</p>
+                                    <p class="text-gray-500">CEO of Pennyupp & Bondspe</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                     <!-- Testimonial 3 -->
+                    <div class="testimonial-item">
+                        <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 h-full flex flex-col justify-center">
+                            <p class="text-lg md:text-xl text-gray-600 relative z-10 text-center">"Ashutosh has a fantastic eye for design and a deep understanding of user experience. He was instrumental in shaping the visual identity of our platform."</p>
+                            <div class="flex items-center mt-6 justify-center">
+                                <img src="https://placehold.co/50x50/E0E7FF/4F46E5?text=R" alt="Rishav" class="w-12 h-12 rounded-full object-cover">
+                                <div class="ml-4 text-left">
+                                    <p class="font-bold text-gray-900">Rishav</p>
+                                    <p class="text-gray-500">Picxele</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="testimonial-dots" class="flex justify-center mt-8 space-x-3">
                 </div>
             </div>
         </section>
@@ -998,98 +1025,6 @@
                 }
             });
             
-            // --- Particle Hero Background ---
-            const heroCanvas = document.getElementById('hero-canvas');
-            const heroCtx = heroCanvas.getContext('2d');
-            let w, h;
-            let mouse = { x: undefined, y: undefined };
-            let particles = [];
-            
-            class Particle {
-                constructor(x, y, size, speedX, speedY, color) {
-                    this.x = x;
-                    this.y = y;
-                    this.size = size;
-                    this.speedX = speedX;
-                    this.speedY = speedY;
-                    this.color = color;
-                }
-                update() {
-                    if (this.x > w || this.x < 0) this.speedX *= -1;
-                    if (this.y > h || this.y < 0) this.speedY *= -1;
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                }
-                draw() {
-                    heroCtx.fillStyle = this.color;
-                    heroCtx.beginPath();
-                    heroCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    heroCtx.fill();
-                }
-            }
-
-            const initParticles = () => {
-                particles = [];
-                let numberOfParticles = (w * h) / 9000;
-                for (let i = 0; i < numberOfParticles; i++) {
-                    let size = Math.random() * 2 + 1;
-                    let x = Math.random() * (w - size * 2) + size;
-                    let y = Math.random() * (h - size * 2) + size;
-                    let speedX = (Math.random() * 0.4) - 0.2;
-                    let speedY = (Math.random() * 0.4) - 0.2;
-                    let color = 'rgba(79, 70, 229, 0.7)';
-                    particles.push(new Particle(x, y, size, speedX, speedY, color));
-                }
-            };
-            
-            const setCanvasDimensions = () => {
-                w = heroCanvas.width = window.innerWidth;
-                h = heroCanvas.height = window.innerHeight;
-                initParticles();
-            };
-            setCanvasDimensions();
-
-            window.addEventListener('resize', setCanvasDimensions);
-
-            heroCanvas.addEventListener('mousemove', e => {
-                mouse.x = e.clientX;
-                mouse.y = e.clientY;
-            });
-             heroCanvas.addEventListener('mouseleave', () => {
-                mouse.x = undefined;
-                mouse.y = undefined;
-            });
-
-            const connectParticles = () => {
-                let opacityValue = 1;
-                for (let a = 0; a < particles.length; a++) {
-                    for (let b = a; b < particles.length; b++) {
-                        let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) +
-                                     ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
-                        if (distance < (w / 7) * (h / 7)) {
-                            opacityValue = 1 - (distance / 20000);
-                            heroCtx.strokeStyle = `rgba(79, 70, 229, ${opacityValue})`;
-                            heroCtx.lineWidth = 1;
-                            heroCtx.beginPath();
-                            heroCtx.moveTo(particles[a].x, particles[a].y);
-                            heroCtx.lineTo(particles[b].x, particles[b].y);
-                            heroCtx.stroke();
-                        }
-                    }
-                }
-            };
-            
-            const animateParticles = () => {
-                heroCtx.clearRect(0, 0, w, h);
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-                connectParticles();
-                requestAnimationFrame(animateParticles);
-            };
-            animateParticles();
-
 
             // --- Page Transitions & Active Nav on Scroll ---
             const sections = document.querySelectorAll('section');
@@ -1145,29 +1080,54 @@
             
             document.querySelectorAll('.animated-text').forEach(setupAnimatedText);
             
-            // --- New Hero Text Animation ---
+             // --- Modern Hero Text Animation ---
             const animatedVerb = document.getElementById('animated-verb');
             const verbs = ['Create', 'Innovate', 'Design', 'Build'];
             let verbIndex = 0;
 
+            function splitTextToSpans(element, text) {
+                element.innerHTML = '';
+                text.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    if (char === ' ') {
+                        span.innerHTML = '&nbsp;';
+                    } else {
+                        span.textContent = char;
+                    }
+                    element.appendChild(span);
+                });
+            }
+
             function changeVerb() {
-                animatedVerb.classList.add('slide-out');
+                animatedVerb.classList.add('animate-out');
+                animatedVerb.classList.remove('animate-in');
+                Array.from(animatedVerb.children).forEach((span, i) => {
+                    span.style.animationDelay = `${i * 30}ms`;
+                });
 
                 setTimeout(() => {
                     verbIndex = (verbIndex + 1) % verbs.length;
-                    animatedVerb.textContent = verbs[verbIndex];
-                    
-                    animatedVerb.classList.remove('slide-out');
-                    animatedVerb.classList.add('slide-in');
+                    splitTextToSpans(animatedVerb, verbs[verbIndex]);
 
-                    setTimeout(() => {
-                         animatedVerb.classList.remove('slide-in');
-                    }, 10);
+                    animatedVerb.classList.remove('animate-out');
+                    animatedVerb.classList.add('animate-in');
+                    Array.from(animatedVerb.children).forEach((span, i) => {
+                        span.style.animationDelay = `${i * 30}ms`;
+                    });
 
-                }, 500);
+                }, 400); 
             }
+            
+            // Initial setup
+            splitTextToSpans(animatedVerb, verbs[verbIndex]);
+            setTimeout(() => {
+                animatedVerb.classList.add('animate-in');
+                Array.from(animatedVerb.children).forEach((span, i) => {
+                    span.style.animationDelay = `${i * 30}ms`;
+                });
+            }, 100);
 
-            setInterval(changeVerb, 2500);
+            setInterval(changeVerb, 3000);
 
             // --- Smoother Cursor ---
             const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
@@ -1245,58 +1205,73 @@
             }
             form.addEventListener("submit", handleSubmit)
 
-            // --- Testimonial Carousel ---
-            const carouselContainer = document.getElementById('testimonial-carousel');
-            const carousel = document.querySelector('#testimonial-carousel .flex');
-            const prevBtn = document.getElementById('prev-testimonial');
-            const nextBtn = document.getElementById('next-testimonial');
-            const testimonialItems = document.querySelectorAll('.testimonial-item');
-            let currentIndex = 0;
-            const totalSlides = carousel.children.length;
-            let autoScrollInterval;
+            // --- Modern Testimonial Carousel ---
+            const testimonialContainer = document.getElementById('testimonial-container');
+            const testimonialItems = Array.from(testimonialContainer.children);
+            const dotsContainer = document.getElementById('testimonial-dots');
+            let testimonialIndex = 0;
+            let testimonialInterval;
 
-            function updateCarousel() {
-                carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-                testimonialItems.forEach((item, index) => {
-                    item.style.opacity = index === currentIndex ? 1 : 0.5;
+            // Create dots
+            testimonialItems.forEach((_, i) => {
+                const button = document.createElement('button');
+                button.classList.add('testimonial-dot');
+                button.addEventListener('click', () => {
+                    goToSlide(i);
+                    stopAutoScroll();
+                    startAutoScroll();
                 });
+                dotsContainer.appendChild(button);
+            });
+            const dots = Array.from(dotsContainer.children);
+
+            function goToSlide(index) {
+                const exitingIndex = testimonialIndex;
+                if (index === exitingIndex) return;
+
+                testimonialIndex = index;
+
+                // Handle exiting slide
+                if (testimonialItems[exitingIndex]) {
+                    testimonialItems[exitingIndex].classList.remove('active');
+                    testimonialItems[exitingIndex].classList.add('exiting');
+                }
+
+                // Handle new slide
+                testimonialItems[testimonialIndex].classList.remove('exiting');
+                testimonialItems[testimonialIndex].classList.add('active');
+                
+                // Update dots
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === testimonialIndex);
+                });
+                
+                // Clean up 'exiting' class after transition
+                setTimeout(() => {
+                    if (testimonialItems[exitingIndex]) {
+                        testimonialItems[exitingIndex].classList.remove('exiting');
+                    }
+                }, 500); // Should match CSS transition duration
             }
 
-            function nextSlide() {
-                currentIndex = (currentIndex + 1) % totalSlides;
-                updateCarousel();
+            function nextTestimonial() {
+                goToSlide((testimonialIndex + 1) % testimonialItems.length);
             }
 
-            function prevSlide() {
-                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-                updateCarousel();
-            }
-            
             function startAutoScroll() {
-                stopAutoScroll();
-                autoScrollInterval = setInterval(nextSlide, 5000);
+                stopAutoScroll(); // Ensure no multiple intervals are running
+                testimonialInterval = setInterval(nextTestimonial, 5000);
             }
 
             function stopAutoScroll() {
-                clearInterval(autoScrollInterval);
+                clearInterval(testimonialInterval);
             }
 
-            nextBtn.addEventListener('click', () => {
-                nextSlide();
-                stopAutoScroll();
-                startAutoScroll();
-            });
+            testimonialContainer.addEventListener('mouseenter', stopAutoScroll);
+            testimonialContainer.addEventListener('mouseleave', startAutoScroll);
 
-            prevBtn.addEventListener('click', () => {
-                prevSlide();
-                stopAutoScroll();
-                startAutoScroll();
-            });
-            
-            carouselContainer.addEventListener('mouseenter', stopAutoScroll);
-            carouselContainer.addEventListener('mouseleave', startAutoScroll);
-
-            updateCarousel();
+            // Initial state
+            goToSlide(0);
             startAutoScroll();
 
             // --- Expand Designs ---
