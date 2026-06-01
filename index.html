@@ -10,15 +10,54 @@
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --secondary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --primary-color: #4f46e5;
+            --text-dark: #0f172a;
+            --text-light: #f8fafc;
+            --glass-bg-light: rgba(255, 255, 255, 0.7);
+            --glass-border-light: rgba(255, 255, 255, 0.4);
+            --glass-bg-dark: rgba(15, 23, 42, 0.7);
+            --glass-border-dark: rgba(255, 255, 255, 0.05);
+        }
+        /* Ambient Animated Background blobs */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            background-color: transparent;
+        }
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: moveBlob 20s infinite alternate ease-in-out;
+            border-radius: 50%;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(124, 58, 237, 0.3); }
+        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(79, 70, 229, 0.3); animation-delay: -5s; }
+        .blob-3 { top: 40%; left: 60%; width: 40vw; height: 40vw; background: rgba(236, 72, 153, 0.2); animation-delay: -10s; }
+        
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 10%) scale(1.1); }
+            100% { transform: translate(-5%, -5%) scale(0.95); }
+        }
+
         html {
             scroll-behavior: smooth;
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Balanced off-white background */
-            color: #111827; /* Stronger dark text */
+            background-color: #f8fafc; /* Premium cool white background */
+            color: var(--text-dark);
             overflow-x: hidden;
+            position: relative;
         }
         
         /* Hide custom cursor on touch devices and show default */
@@ -44,20 +83,36 @@
             transform: translateY(0);
         }
         .glass-effect {
-            background: rgba(243, 244, 246, 0.8); /* Glass effect matching the new background */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: var(--glass-bg-light);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border-light);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        /* 3D Card Setup */
+        .card-3d-wrapper {
+            perspective: 1500px;
         }
         .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            border: 1px solid #e5e7eb;
-            background-color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transform-style: preserve-3d;
+            will-change: transform;
         }
         .card:hover {
-            box-shadow: 0 0 25px rgba(79, 70, 229, 0.2), 0 10px 20px rgba(79, 70, 229, 0.1);
-            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.15), 0 10px 15px -5px rgba(79, 70, 229, 0.1);
+            border-color: rgba(99, 102, 241, 0.5);
         }
+        /* Make contents float off the card */
+        .card > * {
+            transform: translateZ(40px);
+            transition: transform 0.3s ease;
+        }
+        
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -80,16 +135,18 @@
         }
 
         .cursor {
-            width: 10px;
-            height: 10px;
-            background-color: #4f46e5;
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            mix-blend-mode: difference;
             transition: transform 0.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .cursor-follower {
             width: 40px;
             height: 40px;
-            border: 1px solid #4f46e5;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            mix-blend-mode: difference;
             transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1),
                         background-color 0.4s cubic-bezier(0.19, 1, 0.22, 1),
                         border-color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -100,8 +157,8 @@
         }
 
         .cursor-follower.hover-effect {
-            transform: translate(-50%, -50%) scale(1.5);
-            background-color: rgba(79, 70, 229, 0.2);
+            transform: translate(-50%, -50%) scale(1.8);
+            background-color: white;
             border-color: transparent;
         }
 
@@ -112,14 +169,64 @@
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        /* Improved Button Shine and Press Effect */
+        /* --- Isometric Grid Background --- */
+        .iso-grid-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+            perspective: 1000px;
+            pointer-events: none;
+        }
+        
+        .iso-grid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background-color: transparent;
+            background-image: 
+                linear-gradient(rgba(79, 70, 229, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79, 70, 229, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform-origin: center;
+            transform: translate(-50%, -50%) rotateX(60deg) rotateZ(-45deg);
+            animation: moveGrid 20s linear infinite;
+        }
+        
+        .dark .iso-grid {
+             background-image: 
+                linear-gradient(rgba(129, 140, 248, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(129, 140, 248, 0.1) 1px, transparent 1px);
+        }
+
+        @keyframes moveGrid {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* Improved Premium Buttons */
         .btn {
             position: relative;
             overflow: hidden;
-            transition: transform 0.1s ease-out;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
         .btn:active {
-            transform: scale(0.97);
+            transform: scale(0.98) translateY(0);
         }
         .btn::before {
             content: '';
@@ -128,7 +235,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.6s ease;
         }
         .btn:hover::before {
@@ -159,7 +266,7 @@
         }
         /* Bento Grid */
         .bento-grid, #project-grid, #profile-grid {
-            perspective: 1000px;
+            perspective: 1500px;
         }
         .bento-grid {
             display: grid;
@@ -169,18 +276,14 @@
         }
         .bento-item {
             position: relative;
-            overflow: hidden;
             border-radius: 0.5rem;
-            background-color: #e5e7eb;
+            background-color: transparent;
         }
         .bento-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        .bento-item:hover img {
-            transform: scale(1.05);
+            border-radius: 0.5rem;
         }
         .bento-item-1 { grid-column: span 2; grid-row: span 2; }
         .bento-item-2 { grid-column: span 2; }
@@ -263,10 +366,11 @@
             top: 0;
             left: 0;
             height: 4px;
-            background: #4f46e5;
+            background: var(--primary-gradient);
             z-index: 10000;
             width: 0%;
             transition: width 0.1s linear;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
         }
         /* Project Filtering */
         .project-card {
@@ -305,22 +409,16 @@
             border-color: #4f46e5;
         }
         
-        /* --- ENHANCED MINIMAL PROFILE CARD STYLES --- */
+        /* Hover Glow Elements inside cards */
+        .card .icon-container, .card img, .card h3, .card p, .card .link-text {
+            transform: translateZ(40px);
+        }
+        
+        /* Profile Card - Inherits main card 3D Setup */
         .profile-card {
             display: block;
-            background: #ffffff;
-            border-radius: 0.75rem;
-            padding: 1.5rem; /* Reduced padding */
             text-align: center;
-            border: 1px solid #e5e7eb;
             position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .profile-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            border-color: #e5e7eb; /* Keep border color consistent */
         }
         .profile-card .icon-container {
             transition: transform 0.3s ease;
@@ -358,6 +456,14 @@
             position: relative;
             display: inline-block;
             vertical-align: baseline;
+        }
+
+        #animated-verb {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
         }
 
         #animated-verb span {
@@ -431,12 +537,16 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         .dark body {
-            background-color: #0F172A; /* Dark Navy Blue */
-            color: #d1d5db; /* Lighter text */
+            background-color: var(--bg-color-dark); /* Dark Navy Blue */
+            color: var(--text-light); /* Lighter text */
+        }
+        .dark .ambient-bg .blob {
+            opacity: 0.25;
         }
         .dark .glass-effect {
-            background: rgba(15, 23, 42, 0.8); /* Darker Navy for glass */
-            border-bottom-color: rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg-dark); /* Darker Navy for glass */
+            border-bottom-color: var(--glass-border-dark);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
         .dark a {
             color: #d1d5db;
@@ -483,8 +593,8 @@
              background: radial-gradient(ellipse at top, rgba(79, 70, 229, 0.1), transparent 70%);
          }
         .dark .card {
-            background-color: #334155; /* Slate 700 */
-            border-color: #475569; /* Slate 600 */
+            background-color: rgba(30, 41, 59, 0.7); /* Slate 800 with transparency */
+            border-color: rgba(255, 255, 255, 0.05);
         }
         .dark .text-gray-900 {
             color: #f8fafc;
@@ -546,23 +656,34 @@
         }
 
         .dark .cursor {
-            background-color: #818cf8; /* Lighter Indigo */
+            background-color: white; 
         }
 
         .dark .cursor-follower {
-            border-color: #818cf8;
+            border-color: rgba(255, 255, 255, 0.8);
         }
 
         .dark .cursor-follower.hover-effect {
-            background-color: rgba(129, 140, 248, 0.2);
+            background-color: white;
         }
 
     </style>
 </head>
 <body class="antialiased">
 
+    <div class="ambient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
     <div id="progress-bar"></div>
 
+    <!-- 3D Isometric Grid Hero Background -->
+    <div class="iso-grid-container" id="iso-container">
+        <div class="iso-grid" id="iso-grid-el"></div>
+    </div>
+    
     <!-- Custom Cursor Elements -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
@@ -603,7 +724,7 @@
     <main class="flex-grow">
 
         <!-- Hero Section -->
-        <section id="hero" class="relative flex items-center h-screen">
+        <section id="hero" class="relative flex items-center h-screen perspective-1000">
             <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6">
                 <div class="text-left">
                     <h1 class="text-4xl md:text-7xl font-black leading-none tracking-tighter mb-4 text-gray-900">
@@ -1472,6 +1593,41 @@
             // Initial state
             goToSlide(0);
             startAutoScroll();
+
+            // --- 3D VanillaTilt Integration ---
+            // Initialize on cards but check for touch devices so we don't mess up mobile scrolling as much
+            if (window.matchMedia("(pointer: fine)").matches) {
+                VanillaTilt.init(document.querySelectorAll(".card"), {
+                    max: 12,
+                    speed: 400,
+                    glare: true,
+                    "max-glare": 0.15,
+                    scale: 1.02,
+                    perspective: 1500
+                });
+            }
+            
+            // --- Interactive Isometric Grid ---
+            const isoGridEl = document.getElementById('iso-grid-el');
+            const heroSection = document.getElementById('hero');
+            
+            if (!isTouchDevice && isoGridEl && heroSection) {
+                 heroSection.addEventListener('mousemove', (e) => {
+                     const rect = heroSection.getBoundingClientRect();
+                     const x = e.clientX - rect.left - rect.width / 2;
+                     const y = e.clientY - rect.top - rect.height / 2;
+                     
+                     // Calculate slight rotation based on mouse position
+                     const rotateX = 60 - (y / rect.height) * 10;
+                     const rotateZ = -45 + (x / rect.width) * 10;
+                     
+                     isoGridEl.style.transform = `translate(-50%, -50%) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`;
+                 });
+                 
+                 heroSection.addEventListener('mouseleave', () => {
+                     isoGridEl.style.transform = `translate(-50%, -50%) rotateX(60deg) rotateZ(-45deg)`;
+                 });
+            }
 
             // --- Expand Designs ---
             const expandBtn = document.getElementById('expand-designs-btn');
